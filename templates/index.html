@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MailPilot AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+
+            <h2>MailPilot <span>AI</span></h2>
+
+            <nav>
+                <a class="active" href="/">Dashboard</a>
+                <a href="#">Inbox</a>
+                <a href="#">AI Assistant</a>
+                <a href="#">Drafts</a>
+                <a href="#">Settings</a>
+            </nav>
+
+            <div class="profile">
+                <div class="avatar">U</div>
+
+                <div>
+                    <h4>Your Account</h4>
+                    <p>Personal Assistant</p>
+                </div>
+            </div>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            <header>
+                <div>
+                    <h1>AI Assistant</h1>
+                    <p>Manage your emails intelligently.</p>
+                </div>
+
+                <button class="connect-btn">
+                    Connect Gmail
+                </button>
+            </header>
+
+
+            <section class="stats">
+
+                <div class="stat-card">
+                    <p>Unread Emails</p>
+                    <h2>--</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>AI Drafts</p>
+                    <h2>--</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Emails Processed</p>
+                    <h2>--</h2>
+                </div>
+
+            </section>
+
+
+            <section class="assistant">
+
+                <h2>What can I help you with?</h2>
+
+                <p>
+                    Ask your AI assistant to summarize emails,
+                    draft replies, or find important information.
+                </p>
+
+                <div class="chat-box">
+
+                    <textarea
+                        id="message"
+                        placeholder="Ask something about your emails..."
+                    ></textarea>
+
+                    <button onclick="askAgent()">
+                        Send Message
+                    </button>
+
+                </div>
+
+                <div id="response" class="response"></div>
+
+            </section>
+
+
+            <section class="recent">
+
+                <h2>Recent Emails</h2>
+
+                <div class="email-placeholder">
+                    Connect your Gmail account to see your emails.
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script>
+
+        async function askAgent() {
+
+            const message = document.getElementById("message").value;
+
+            if (!message.trim()) {
+                alert("Please enter a message.");
+                return;
+            }
+
+            const responseBox = document.getElementById("response");
+
+            responseBox.innerText = "Processing your request...";
+
+            try {
+
+                const response = await fetch("/ask", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: message
+                    })
+
+                });
+
+                const data = await response.json();
+
+                responseBox.innerText = data.reply;
+
+            } catch (error) {
+
+                responseBox.innerText = "Something went wrong.";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
