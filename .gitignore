@@ -1,12 +1,23 @@
 
+# Gemini API Key
 .env
 .env.*
+
+# Gmail Credentials
+credentials.json
+token.json
+
+# Python Virtual Environment
 .venv/
 venv/
-credentials.json
-credentials.json.json
-token.json
-client_secret*.json
+
+# Python Cache
 __pycache__/
 *.pyc
+
+# VS Code Local Settings
 .vscode/
+
+# System Files
+.DS_Store
+Thumbs.db
