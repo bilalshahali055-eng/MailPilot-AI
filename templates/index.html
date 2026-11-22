@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MailPilot AI</title>
+    <title>MailPilot AI Dashboard</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -14,153 +14,492 @@
 
 <body>
 
-    <div class="dashboard">
+<div class="dashboard">
 
-        <aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
+        <div class="logo">
+            <div class="logo-icon">✉</div>
             <h2>MailPilot <span>AI</span></h2>
+        </div>
 
-            <nav>
-                <a class="active" href="/">Dashboard</a>
-                <a href="#">Inbox</a>
-                <a href="#">AI Assistant</a>
-                <a href="#">Drafts</a>
-                <a href="#">Settings</a>
-            </nav>
+        <p class="menu-label">WORKSPACE</p>
 
+        <nav>
+            <a href="/" class="active">▦ &nbsp; Dashboard</a>
+            <a href="#inbox">✉ &nbsp; Inbox</a>
+            <a href="#assistant">✦ &nbsp; AI Assistant</a>
+            <a href="#summary">☷ &nbsp; AI Summaries</a>
+        </nav>
+
+        <div class="sidebar-bottom">
             <div class="profile">
                 <div class="avatar">U</div>
 
                 <div>
                     <h4>Your Account</h4>
-                    <p>Personal Assistant</p>
+                    <p>Personal Workspace</p>
                 </div>
             </div>
+        </div>
 
-        </aside>
-
-
-        <main class="main-content">
-
-            <header>
-                <div>
-                    <h1>AI Assistant</h1>
-                    <p>Manage your emails intelligently.</p>
-                </div>
-
-                <button class="connect-btn">
-                    Connect Gmail
-                </button>
-            </header>
+    </aside>
 
 
-            <section class="stats">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-                <div class="stat-card">
-                    <p>Unread Emails</p>
-                    <h2>--</h2>
-                </div>
+        <!-- HEADER -->
+        <header class="topbar">
 
-                <div class="stat-card">
-                    <p>AI Drafts</p>
-                    <h2>--</h2>
-                </div>
-
-                <div class="stat-card">
-                    <p>Emails Processed</p>
-                    <h2>--</h2>
-                </div>
-
-            </section>
-
-
-            <section class="assistant">
-
-                <h2>What can I help you with?</h2>
-
-                <p>
-                    Ask your AI assistant to summarize emails,
-                    draft replies, or find important information.
+            <div>
+                <p class="eyebrow">YOUR WORKSPACE</p>
+                <h1>Dashboard</h1>
+                <p class="subtitle">
+                    Welcome to your intelligent email workspace.
                 </p>
+            </div>
 
-                <div class="chat-box">
+            <div class="connection-status">
+                <span class="status-dot"></span>
+                Gmail Connected
+            </div>
 
-                    <textarea
-                        id="message"
-                        placeholder="Ask something about your emails..."
-                    ></textarea>
+        </header>
 
-                    <button onclick="askAgent()">
-                        Send Message
-                    </button>
 
+        <!-- STATISTICS -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-icon blue">✉</div>
+                <p>Recent Inbox Emails</p>
+                <h2>{{ emails|length }}</h2>
+                <small>Latest messages retrieved</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon purple">✦</div>
+                <p>AI Assistant</p>
+                <h2>Ready</h2>
+                <small>Powered by Gemini</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <p>Email Summarization</p>
+                <h2>Available</h2>
+                <small>Summarize recent emails</small>
+            </div>
+
+        </section>
+
+
+        <!-- AI ASSISTANT -->
+        <section class="panel assistant" id="assistant">
+
+            <div class="section-heading">
+                <div>
+                    <h2>✦ AI Assistant</h2>
+                    <p>Ask questions or create email drafts.</p>
                 </div>
 
-                <div id="response" class="response"></div>
+                <span class="feature-tag">Gemini AI</span>
+            </div>
 
-            </section>
+            <div class="suggestions">
+
+                <button type="button"
+                    onclick="setPrompt('Write a professional email requesting a meeting.')">
+                    Draft an email
+                </button>
+
+                <button type="button"
+                    onclick="setPrompt('Help me write a polite follow-up email.')">
+                    Write a follow-up
+                </button>
+
+                <button type="button"
+                    onclick="setPrompt('Give me tips for writing professional emails.')">
+                    Email writing tips
+                </button>
+
+            </div>
+
+            <textarea
+                id="message"
+                placeholder="Ask MailPilot AI anything..."
+            ></textarea>
+
+            <div class="action-row">
+                <button type="button"
+                    class="primary-btn"
+                    id="ask-btn"
+                    onclick="askAgent()">
+                    ✦ Ask AI
+                </button>
+            </div>
+
+            <div id="response"
+                 class="ai-response"
+                 aria-live="polite"></div>
+
+        </section>
 
 
-            <section class="recent">
+        <!-- AI EMAIL SUMMARY -->
+        <section class="panel" id="summary">
 
-                <h2>Recent Emails</h2>
-
-                <div class="email-placeholder">
-                    Connect your Gmail account to see your emails.
+            <div class="section-heading">
+                <div>
+                    <h2>AI Email Summary</h2>
+                    <p>Summarize your latest 10 inbox emails.</p>
                 </div>
 
-            </section>
+                <span class="feature-tag">Smart Summary</span>
+            </div>
 
-        </main>
+            <button type="button"
+                class="primary-btn"
+                id="summary-btn"
+                onclick="summarizeEmails()">
+                ✦ Summarize My Emails
+            </button>
 
-    </div>
+            <div id="email-summary"
+                 class="ai-response"
+                 aria-live="polite"></div>
+
+            <p class="privacy-note">
+                Email sender details, subjects, and previews
+                are sent to Gemini when you request a summary.
+            </p>
+
+        </section>
 
 
-    <script>
+        <!-- GMAIL INBOX -->
+        <section class="panel inbox-panel" id="inbox">
 
-        async function askAgent() {
+            <div class="section-heading">
 
-            const message = document.getElementById("message").value;
+                <div>
+                    <h2>Recent Gmail Emails</h2>
+                    <p>Select an email to generate an AI reply.</p>
+                </div>
 
-            if (!message.trim()) {
-                alert("Please enter a message.");
-                return;
-            }
+                <span class="email-count">
+                    {{ emails|length }} Emails
+                </span>
 
-            const responseBox = document.getElementById("response");
+            </div>
 
-            responseBox.innerText = "Processing your request...";
+            <div class="email-list">
 
-            try {
+                {% if emails %}
 
-                const response = await fetch("/ask", {
+                    {% for email in emails %}
 
-                    method: "POST",
+                    <div class="email-item">
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                        <div class="email-avatar">
+                            {{ email["from"][:1]|upper }}
+                        </div>
 
-                    body: JSON.stringify({
-                        message: message
-                    })
+                        <div class="email-info">
 
-                });
+                            <div class="email-top">
+                                <h4>{{ email["from"] }}</h4>
+                                <small>{{ email["date"] }}</small>
+                            </div>
 
-                const data = await response.json();
+                            <h3>{{ email["subject"] }}</h3>
 
-                responseBox.innerText = data.reply;
+                            <p>{{ email["snippet"] }}</p>
 
-            } catch (error) {
+                            <!-- GENERATE REPLY BUTTON -->
+                            <div class="action-row">
 
-                responseBox.innerText = "Something went wrong.";
+                                <button
+                                    type="button"
+                                    class="primary-btn generate-reply-btn"
+                                    data-email-id="{{ email['id'] }}">
+                                    ✦ Generate AI Reply
+                                </button>
 
-            }
+                            </div>
 
+                            <!-- AI REPLY BOX -->
+                            <div class="reply-container"
+                                 style="display:none; margin-top:15px;">
+
+                                <h3>AI Suggested Reply</h3>
+
+                                <textarea
+                                    class="reply-text"
+                                    rows="7"
+                                    aria-label="Edit suggested email reply"
+                                ></textarea>
+
+                                <div class="action-row">
+
+                                    <button
+                                        type="button"
+                                        class="primary-btn copy-reply-btn">
+                                        Copy Reply
+                                    </button>
+
+                                </div>
+
+                                <p class="privacy-note">
+                                    Review and edit this draft before using it.
+                                    No email will be sent automatically.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <h3>No emails available</h3>
+                        <p>Your inbox is empty or Gmail could not be loaded.</p>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            MailPilot AI · Powered by Flask, Gmail API & Gemini
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    // SUGGESTED PROMPTS
+    function setPrompt(text) {
+        const box = document.getElementById("message");
+        box.value = text;
+        box.focus();
+    }
+
+
+    // GEMINI AI CHAT
+    async function askAgent() {
+
+        const message = document.getElementById("message").value;
+        const box = document.getElementById("response");
+        const button = document.getElementById("ask-btn");
+
+        if (!message.trim()) {
+            alert("Please enter a message.");
+            return;
         }
 
-    </script>
+        button.disabled = true;
+        button.innerText = "Processing...";
+
+        box.style.display = "block";
+        box.innerText = "AI is thinking...";
+
+        try {
+
+            const response = await fetch("/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+
+            const data = await response.json();
+
+            box.innerText =
+                data.reply || "No response received.";
+
+        } catch (error) {
+
+            box.innerText = "Something went wrong.";
+
+        } finally {
+
+            button.disabled = false;
+            button.innerText = "✦ Ask AI";
+
+        }
+    }
+
+
+    // AI EMAIL SUMMARIZATION
+    async function summarizeEmails() {
+
+        const box = document.getElementById("email-summary");
+        const button = document.getElementById("summary-btn");
+
+        button.disabled = true;
+        button.innerText = "Summarizing...";
+
+        box.style.display = "block";
+        box.innerText = "Gemini is analyzing your emails...";
+
+        try {
+
+            const response = await fetch("/summarize", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+
+            box.innerText =
+                data.summary || "No summary generated.";
+
+        } catch (error) {
+
+            box.innerText = "Unable to summarize emails.";
+
+        } finally {
+
+            button.disabled = false;
+            button.innerText = "✦ Summarize My Emails";
+
+        }
+    }
+
+
+    // GENERATE AI EMAIL REPLY
+    async function generateReply(emailId, button) {
+
+        
+       
+
+        console.log("Generate Reply clicked:", emailId);
+
+        const emailItem = button.closest(".email-item");
+
+        const replyContainer =
+            emailItem.querySelector(".reply-container");
+
+        const replyText =
+            emailItem.querySelector(".reply-text");
+
+        button.disabled = true;
+        button.innerText = "Generating...";
+
+        replyContainer.style.display = "block";
+        replyText.value = "Gemini is writing your reply...";
+
+        try {
+
+            const response = await fetch("/generate-reply", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email_id: emailId
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.reply || "Unable to generate reply."
+                );
+            }
+
+            replyText.value =
+                data.reply || "No reply generated.";
+
+        } catch (error) {
+
+            console.error("Generate Reply Error:", error);
+
+            replyText.value =
+                error.message || "Unable to generate reply.";
+
+        } finally {
+
+            button.disabled = false;
+            button.innerText = "✦ Generate AI Reply";
+
+        }
+    }
+
+
+    // COPY GENERATED REPLY
+    async function copyReply(button) {
+
+        const container = button.closest(".reply-container");
+
+        const replyText =
+            container.querySelector(".reply-text");
+
+        try {
+
+            await navigator.clipboard.writeText(replyText.value);
+
+            button.innerText = "Copied!";
+
+            setTimeout(() => {
+                button.innerText = "Copy Reply";
+            }, 2000);
+
+        } catch (error) {
+
+            replyText.select();
+
+            button.innerText = "Select text and press Ctrl+C";
+
+        }
+    }
+
+
+    // CONNECT BUTTONS TO JAVASCRIPT
+    document.querySelectorAll(".generate-reply-btn").forEach(
+        function(button) {
+
+            button.addEventListener("click", function() {
+
+                const emailId = button.dataset.emailId;
+
+                generateReply(emailId, button);
+
+            });
+
+        }
+    );
+
+
+    document.querySelectorAll(".copy-reply-btn").forEach(
+        function(button) {
+
+            button.addEventListener("click", function() {
+
+                copyReply(button);
+
+            });
+
+        }
+    );
+
+</script>
 
 </body>
-
 </html>
